@@ -199,6 +199,8 @@ process(?CONNECT_PACKET(Var), State0) ->
                     %% Generate clientId if null
                     State2 = maybe_set_clientid(State1),
 
+                    %% Run hooks
+                    emqttd_hooks:run('client.authed', [?CONNACK_ACCEPT], client(State2)),
                     %% Start session
                     case emqttd_sm:start_session(CleanSess, {clientid(State2), Username}) of
                         {ok, Session, SP} ->
